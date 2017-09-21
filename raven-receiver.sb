@@ -25,8 +25,8 @@ EndSub
 
 'INÍCIO
 While "True"
-  'Espera até ouvir o primeiro pulso
-  While SensorSom <= Limite
+  'Espera até detectar o primeiro pulso
+  While SensorToque <= Limite
   EndWhile
   
   'Salva o tempo em que o primeiro pulso foi ouvido
@@ -34,16 +34,16 @@ While "True"
   
   RESETARBITS()
   
-  'TODO: substituir todas as ocorrências de SensorSom pela função 
+  'TODO: substituir todas as ocorrências de SensorToque pela função 
   'de leitura do sensor
   
-  'Espera o som abaixar
-  While SensorSom > Limite - 10
+  'Espera o sensor de toque ser liberado
+  While SensorToque > Limite - 10
   EndWhile
   
-  'Tenta ouvir o segundo pulso enquanto não tiver esgotado o tempo
+  'Tenta detectar o segundo pulso enquanto não tiver esgotado o tempo
   While EV3.Time <= (UltimoPulso + 450)
-    If SensorSom > Limite Then
+    If SensorToque > Limite Then
       Bit[Indice] = 1
     EndIf
   EndWhile
