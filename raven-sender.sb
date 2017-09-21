@@ -1,0 +1,69 @@
+'DECLARAÇÃO DE VARIÁVEIS
+Mapa = "@@ABCDEFGHIJKLMNOPQRSTUVWXYZ .?!"
+Mensagem = "BRASIL"
+Decimal = 0
+Bit[0] = 0
+
+
+'SUBROTINAS
+Sub RESETARATUADOR
+  'TODO: escrever método
+EndSub
+
+
+Sub RESETARBITS
+  For j = 0 To 4
+    Bit[j] = 0
+  EndFor
+EndSub
+
+
+Sub CONVERTERPARABINARIO
+  RESETARBITS()
+  Aux = Decimal
+  k = 4
+  While Aux > 0 And k >= 0
+    AuxInteiro = Math.Floor(Aux/2)
+    Bit[k] = Aux - (AuxInteiro*2)
+    Aux = AuxInteiro
+    k = k - 1
+  EndWhile
+EndSub
+
+
+Sub ENVIARBITS
+  For l = 0 To 4
+    If Bit[l] = 1 Then
+      PULSAR()
+      Program.Delay(200)
+      PULSAR()
+    Else
+      PULSAR()
+    EndIf
+      Program.Delay(500)
+      TextWindow.WriteLine("")
+  EndFor
+EndSub
+
+
+Sub ENVIARMENSAGEM
+  For i = 1 To Text.GetLength(Mensagem)
+    Decimal = Text.GetIndexOf(Mapa, Text.GetSubText(Mensagem, i, 1))
+    Decimal = Decimal - 1
+    CONVERTERPARABINARIO()
+    ENVIARBITS()
+    TextWindow.WriteLine("------")
+  EndFor
+EndSub
+
+
+Sub PULSAR
+  TextWindow.Write("PULSO ")
+  'TODO: substituir este pseudo pulso pelo pulso no motor do 
+  'controlador A
+EndSub
+
+
+'INÍCIO
+ENVIARMENSAGEM()
+RESETARATUADOR()

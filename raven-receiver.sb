@@ -1,0 +1,58 @@
+'DECLARAÇÃO DE VARIÁVEIS
+Mapa = "@@ABCDEFGHIJKLMNOPQRSTUVWXYZ .?!"
+Mensagem = ""
+Limite = 0 'TODO: definir limite correto
+UltimoPulso = 0
+Bit[0] = 0
+Decimal = 0
+Indice = 0
+
+'SUBROTINAS
+Sub RESETARBITS
+  For j = 0 To 4
+    Bit[j] = 0
+  EndFor
+EndSub
+
+Sub LERBITS
+  Decimal = 0
+  For i = 0 To 4
+    Decimal = Decimal + BitLeitura[i] * Math.Power(2, 4 - i)
+  EndFor
+  Decimal = Decimal + 1
+  Mensagem = Mensagem + Text.GetSubText(Mapa, Decimal, 1)
+EndSub
+
+'INÍCIO
+While "True"
+  'Espera até ouvir o primeiro pulso
+  While SensorSom <= Limite
+  EndWhile
+  
+  'Salva o tempo em que o primeiro pulso foi ouvido
+  UltimoPulso = EV3.Time
+  
+  RESETARBITS()
+  
+  'TODO: substituir todas as ocorrências de SensorSom pela função 
+  'de leitura do sensor
+  
+  'Espera o som abaixar
+  While SensorSom > Limite - 10
+  EndWhile
+  
+  'Tenta ouvir o segundo pulso enquanto não tiver esgotado o tempo
+  While EV3.Time <= (UltimoPulso + 450)
+    If SensorSom > Limite Then
+      Bit[Indice] = 1
+    EndIf
+  EndWhile
+  
+  'Incrementa o indice para o próximo bit ou adiciona caractere à  mensagem
+  If Indice < 4 Then
+    Indice = Indice + 1
+  Else
+    Indice = 0
+    BitLeitura = Bit
+  EndIf
+EndWhile
