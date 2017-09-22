@@ -1,13 +1,17 @@
 'DECLARAÇÃO DE VARIÁVEIS
 Mapa = "@@ABCDEFGHIJKLMNOPQRSTUVWXYZ .?!"
-Mensagem = "BRASIL"
+Mensagem = "LEGO!"
 Decimal = 0
 Bit[0] = 0
 
 
 'SUBROTINAS
 Sub RESETARATUADOR
-  'TODO: escrever método
+  Motor.StartPower("A", 25)
+  InicioReset = EV3.Time
+  While EV3.Time < InicioReset + 3000
+  EndWhile
+  Motor.MovePower("A", -20, 30, "True")
 EndSub
 
 
@@ -35,13 +39,11 @@ Sub ENVIARBITS
   For l = 0 To 4
     If Bit[l] = 1 Then
       PULSAR()
-      Program.Delay(200)
       PULSAR()
     Else
       PULSAR()
     EndIf
       Program.Delay(500)
-      TextWindow.WriteLine("")
   EndFor
 EndSub
 
@@ -52,18 +54,17 @@ Sub ENVIARMENSAGEM
     Decimal = Decimal - 1
     CONVERTERPARABINARIO()
     ENVIARBITS()
-    TextWindow.WriteLine("------")
   EndFor
 EndSub
 
 
 Sub PULSAR
-  TextWindow.Write("PULSO ")
-  'TODO: substituir este pseudo pulso pelo pulso no motor do 
-  'controlador A
+  Motor.Move("A", 40, 28, "True")
+  Motor.Move("A", -40, 28, "True")
 EndSub
 
 
 'INÍCIO
-ENVIARMENSAGEM()
 RESETARATUADOR()
+Program.Delay(3000)
+ENVIARMENSAGEM()

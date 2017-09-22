@@ -1,11 +1,12 @@
 'DECLARAÇÃO DE VARIÁVEIS
 Mapa = "@@ABCDEFGHIJKLMNOPQRSTUVWXYZ .?!"
 Mensagem = ""
-Limite = 0 'TODO: definir limite correto
 UltimoPulso = 0
 Bit[0] = 0
+BitLeitura[0] = 0
 Decimal = 0
 Indice = 0
+Contador = 0
 
 'SUBROTINAS
 Sub RESETARBITS
@@ -21,38 +22,43 @@ Sub LERBITS
   EndFor
   Decimal = Decimal + 1
   Mensagem = Mensagem + Text.GetSubText(Mapa, Decimal, 1)
+  LCD.StopUpdate()
+  LCD.Clear()
+  LCD.Text(1, 20, 50, 2, Mensagem)
+  LCD.Update()
 EndSub
 
 'INÍCIO
+RESETARBITS()
 While "True"
   'Espera até detectar o primeiro pulso
-  While SensorToque <= Limite
+  While Sensor.ReadPercent(1) = 0
   EndWhile
   
   'Salva o tempo em que o primeiro pulso foi ouvido
   UltimoPulso = EV3.Time
   
-  RESETARBITS()
-  
-  'TODO: substituir todas as ocorrências de SensorToque pela função 
-  'de leitura do sensor
-  
   'Espera o sensor de toque ser liberado
-  While SensorToque > Limite - 10
+  While Sensor.ReadPercent(1) = 100
   EndWhile
+  Bit[Indice] = 0
   
   'Tenta detectar o segundo pulso enquanto não tiver esgotado o tempo
-  While EV3.Time <= (UltimoPulso + 450)
-    If SensorToque > Limite Then
+  While EV3.Time < (UltimoPulso + 450)
+    If Sensor.ReadPercent(1) = 100 Then
       Bit[Indice] = 1
     EndIf
   EndWhile
-  
   'Incrementa o indice para o próximo bit ou adiciona caractere à  mensagem
   If Indice < 4 Then
     Indice = Indice + 1
   Else
     Indice = 0
     BitLeitura = Bit
+    Thread.Run = LERBITS
+    RESETARBITS()
   EndIf
+  While Sensor.ReadPercent(1) = 100
+  EndWhile
+  Contador = Contador + 1
 EndWhile
